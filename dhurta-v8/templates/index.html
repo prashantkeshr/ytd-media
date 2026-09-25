@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dhurta Media Lite</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <div><b>Dhurta <span>Media</span></b><small>LOCAL MEDIA DOWNLOADER</small></div>
+  <div id="health">Starting…</div>
+</header>
+<main>
+
+<section class="card hero">
+  <h1>Download Media</h1>
+  <p>Analyze first. Quality buttons are generated from formats actually available on YouTube. Downloads fall back automatically if a source changes.</p>
+  <div class="url">
+    <input id="url" placeholder="Paste YouTube URL">
+    <button id="analyze">Analyze</button>
+  </div>
+  <div class="buttons">
+    <button class="ghost" id="test">Test Connection</button>
+    <button class="ghost" id="syscheck">System Check</button>
+    <button class="ghost" id="repair">Repair Engine</button>
+    <button class="ghost" id="openyt">Open YouTube</button>
+    <button class="ghost" id="openfolder">Open Downloads</button>
+  </div>
+  <div id="notice" class="notice"></div>
+  <div id="diagnostics" class="diag hidden"></div>
+  <div class="path">Downloads: <b id="downloadPath">detecting…</b></div>
+</section>
+
+<section id="video" class="card hidden">
+  <div class="videohead">
+    <a id="thumblink" href="#" target="_blank" rel="noopener noreferrer">
+      <img id="thumb" alt="thumbnail">
+    </a>
+    <div>
+      <h2 id="vtitle">—</h2>
+      <div id="videometa"></div>
+      <p id="desc"></p>
+    </div>
+  </div>
+</section>
+
+<section id="download" class="card hidden">
+  <div class="tabs">
+    <button data-mode="video" class="active">VIDEO</button>
+    <button data-mode="audio">AUDIO</button>
+  </div>
+  <div class="grid">
+    <label class="qualitybox">Available qualities
+      <div id="qualityButtons" class="quality-buttons"></div>
+      <small id="qualityInfo">Analyze to generate quality buttons.</small>
+    </label>
+    <label>Container
+      <select id="container">
+        <option value="mp4">MP4 — recommended</option>
+        <option value="mkv">MKV — maximum compatibility</option>
+        <option value="webm">WebM</option>
+      </select>
+    </label>
+    <label>Audio quality
+      <select id="aq">
+        <option>128K</option>
+        <option selected>192K</option>
+        <option>256K</option>
+        <option>320K</option>
+      </select>
+    </label>
+  </div>
+  <div class="safe">
+    Cookie-free by default • temp files stay outside the media folder • only completed files appear in Downloaded media • if a format disappears Dhurta tries the nearest compatible one automatically.
+  </div>
+  <details>
+    <summary>Advanced settings</summary>
+    <div class="grid">
+      <label>Retries<input id="retry" type="number" value="8" min="1" max="50"></label>
+      <label>Fragment retries<input id="fretry" type="number" value="15" min="1" max="50"></label>
+      <label>Concurrent fragments<input id="conc" type="number" value="2" min="1" max="16"></label>
+      <label>Rate limit<input id="rate" placeholder="e.g. 5M"></label>
+      <label>Sleep interval<input id="sleep" type="number" value="0" min="0"></label>
+      <label>Max sleep<input id="msleep" type="number" value="0" min="0"></label>
+      <label>Filename template<input id="filename" value="%(title)s [%(id)s].%(ext)s"></label>
+      <label>Subtitle language<input id="slang" value="en.*"></label>
+    </div>
+    <div class="checks">
+      <label><input id="meta" type="checkbox" checked> Embed metadata</label>
+      <label><input id="ethumb" type="checkbox"> Embed thumbnail</label>
+      <label><input id="esubs" type="checkbox"> Embed subtitles</label>
+      <label><input id="cookies" type="checkbox"> Use browser session</label>
+      <select id="browser">
+        <option value="none">Cookie-free</option>
+        <option value="chrome">Chrome</option>
+        <option value="edge">Edge</option>
+        <option value="firefox">Firefox</option>
+        <option value="brave">Brave</option>
+        <option value="opera">Opera</option>
+        <option value="vivaldi">Vivaldi</option>
+        <option value="chromium">Chromium</option>
+      </select>
+    </div>
+  </details>
+  <button id="start" class="start">START DOWNLOAD</button>
+</section>
+
+<section class="card">
+  <div class="sectionhead">
+    <h2>Download activity</h2>
+    <button class="ghost" id="clear">Clear</button>
+  </div>
+  <div id="jobs">No active downloads.</div>
+</section>
+
+<section class="card">
+  <div class="sectionhead">
+    <h2>Downloaded media</h2>
+    <button class="ghost" id="openfolder2">Open Folder</button>
+  </div>
+  <div id="files">Loading…</div>
+</section>
+
+<section class="card tips">
+  <h2>Troubleshooting</h2>
+  <div class="tipgrid">
+    <div><b>Media engine error</b>
+      <p>Click System Check. If FFmpeg is red click Repair Engine, then restart.</p></div>
+    <div><b>Format unavailable</b>
+      <p>Dhurta tries up to 6 fallback strategies. Re-analyze if the source changed.</p></div>
+    <div><b>Browser cookie locked</b>
+      <p>Keep Use browser session off. Cookie-free is the recommended default.</p></div>
+    <div><b>Download stuck</b>
+      <p>Downloading = yt-dlp in progress. Processing = FFmpeg merging. Fallback = switching format.</p></div>
+    <div><b>MP4 issues</b>
+      <p>MP4 prefers H.264+M4A. If unavailable Dhurta falls back to a compatible container.</p></div>
+    <div><b>Exact diagnosis</b>
+      <p>Open the job's Technical log — the first ERROR line identifies the failing stage.</p></div>
+  </div>
+</section>
+
+</main>
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+{"manifest_version":3,"name":"Dhurta Media Lite","version":"8.0.0","description":"Send the current YouTube page to Dhurta Media Lite.","permissions":["tabs","storage"],"action":{"default_title":"Send to Dhurta Media","default_popup":"popup.html"},"background":{"service_worker":"background.js"}}

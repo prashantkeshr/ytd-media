@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body{font-family:system-ui,Arial,sans-serif;background:#0d1018;color:#eef1f7;margin:0;padding:14px;min-width:240px}
+  h3{margin:0 0 10px;font-size:14px;color:#8e7dff}
+  label{font-size:11px;color:#9da6b7;display:block;margin-bottom:4px}
+  input{width:100%;box-sizing:border-box;padding:8px;border-radius:8px;border:1px solid #303849;background:#0b0e15;color:#f4f7ff;font-size:13px;margin-bottom:10px}
+  button{width:100%;padding:10px;border-radius:8px;border:none;background:#7665ff;color:#fff;cursor:pointer;font-size:13px;font-weight:600}
+  button:hover{background:#8878ff}
+  .status{font-size:11px;margin-top:8px;color:#63e6a5;min-height:16px}
+  .status.bad{color:#ff8e8e}
+</style>
+</head>
+<body>
+<h3>Dhurta Media Lite</h3>
+<label>Server port</label>
+<input id="port" type="number" min="1024" max="65535" value="5000">
+<button id="send">Open in Dhurta Media</button>
+<div id="status" class="status"></div>
+<script>
+const $ = id => document.getElementById(id);
+
+chrome.storage.local.get(['dhurta_port'], r => {
+  if (r.dhurta_port) $('port').value = r.dhurta_port;
+});
+
+$('port').addEventListener('change', () => {
+  chrome.storage.local.set({ dhurta_port: +$('port').value });
+});
+
+$('send').addEventListener('click', async () => {
+  const port = +$('port').value || 5000;
+  chrome.storage.local.set({ dhurta_port: port });
+  const base = `http://127.0.0.1:${port}`;
+  $('status').textContent = 'Checking server…';
+  $('status').className = 'status';
+  try {
+    const resp = await fetch(`${base}/api/health`, { signal: AbortSignal.timeout(3000) });
+    if (!resp.ok) throw new Error('Not OK');
+  } catch {
+    $('status').textContent = `Cannot reach ${base} — is Dhurta running?`;
+    $('status').className = 'status bad';
+    return;
+  }
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab?.url) { $('status').textContent = 'No active tab found.'; $('status').className = 'status bad'; return; }
+  const browser = detectBrowser();
+  chrome.tabs.create({ url: `${base}/?url=${encodeURIComponent(tab.url)}&browser=${encodeURIComponent(browser)}` });
+  window.close();
+});
+
+function detectBrowser() {
+  const u = navigator.userAgent.toLowerCase();
+  if (u.includes('firefox')) return 'firefox';
+  if (u.includes('edg/'))    return 'edge';
+  if (u.includes('opr/'))    return 'opera';
+  if (u.includes('vivaldi')) return 'vivaldi';
+  if (u.includes('brave'))   return 'brave';
+  if (u.includes('chrome'))  return 'chrome';
+  return 'none';
+}
+</script>
+</body>
+</html>
